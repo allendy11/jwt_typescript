@@ -1,32 +1,31 @@
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import logging from "../config/logging";
-import { Request, Response, NextFunction } from "express";
-import "dotenv/config";
-
+import config from "../config/config";
 const NAMESPACE = "Auth";
-const secret = process.env.ACCESS_SECRET || "access_secret";
 
 const extractJWT = (req: Request, res: Response, next: NextFunction) => {
   logging.info(NAMESPACE, "Validating token");
 
-  const token = req.headers.authorization?.split(" ")[1];
+  let token = req.headers.authorization?.split(" ")[1];
+
   if (token) {
-    jwt.verify(token, secret, (err, decoded) => {
-      if (err) {
-        return res.status(404).json({
-          message: err,
-          err,
+    jwt.verify(token, config.server.token.secret, (error, decoded) => {
+      if (error) {
+        res.status(404).json({
+          message: error.message,
+          error,
         });
       } else {
         res.locals.jwt = decoded;
-        next();
+        next()
       }
-    });
-  } else {
-    return res.status(401).json({
-      message: "Unauthorized",
-    });
+    }) else {
+      res.status(401).json({
+        message: 'Unauthorized'
+      })
+    }
   }
 };
 
-export default extractJWT;
+export default extractJWT

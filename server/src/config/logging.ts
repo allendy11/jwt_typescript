@@ -11,4 +11,4 @@ const getTimeStamp = (): string => {
   return new Date().toLocaleString();
 };
 
-export default { info };
+export default { info, error };

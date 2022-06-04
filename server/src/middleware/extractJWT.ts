@@ -18,14 +18,14 @@ const extractJWT = (req: Request, res: Response, next: NextFunction) => {
         });
       } else {
         res.locals.jwt = decoded;
-        next()
+        next();
       }
-    }) else {
-      res.status(401).json({
-        message: 'Unauthorized'
-      })
-    }
+    });
+  } else {
+    res.status(401).json({
+      message: "Unauthorized",
+    });
   }
 };
 
-export default extractJWT
+export default extractJWT;

@@ -9,10 +9,10 @@ const signJWT = (
   user: IUser,
   cb: (error: Error | null, token: string | null | undefined) => void
 ): void => {
-  logging.info(NAMESPACE, `Attempting to sign token for ${user.username}`);
+  logging.info(NAMESPACE, `Attempting to sign token for ${user.email}`);
   try {
     jwt.sign(
-      { username: user.username },
+      { email: user.email },
       config.server.token.secret,
       {
         issuer: config.server.token.issuer,

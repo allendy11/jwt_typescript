@@ -16,9 +16,9 @@ const mysql = {
 
 const SERVER_HOST = process.env.SERVER_HOST || "localhost";
 const SERVER_PORT = process.env.SERVER_PORT || 4000;
-const SERVER_TOKEN_ISSUER = process.env.SERVER_ISSUER || "coolissuer";
-const SERVER_TOKEN_EXPIRETIME = process.env.SERVER_EXPIRETIME || "30m";
-const SERVER_TOKEN_SECRET = process.env.SERVER_SECRET || "serversecret";
+const SERVER_TOKEN_ISSUER = process.env.SERVER_TOKEN_ISSUER || "coolissuer";
+const SERVER_TOKEN_EXPIRETIME = process.env.SERVER_TOKEN_EXPIRETIME || "30m";
+const SERVER_TOKEN_SECRET = process.env.SERVER_TOKEN_SECRET || "serversecret";
 
 const server = {
   host: SERVER_HOST,

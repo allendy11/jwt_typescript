@@ -3,8 +3,8 @@ import logging from "../config/logging";
 import bcryptjs from "bcryptjs";
 import signJWT from "../functions/signJWT";
 import { Connect, Query } from "../config/mysql";
-import IMySQLResult from "../interfaces/result";
-import IUser from "../interfaces/user";
+// import IMySQLResult from "../interfaces/result";
+// import IUser from "../interfaces/user";
 
 const NAMESPACE = "User";
 
@@ -18,7 +18,7 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
 
 // signup
 const register = (req: Request, res: Response, next: NextFunction) => {
-  let { username, password } = req.body;
+  let { email, password } = req.body;
 
   // hashing password
   bcryptjs.hash(password, 10, (hashError, hash) => {
@@ -28,21 +28,22 @@ const register = (req: Request, res: Response, next: NextFunction) => {
         error: hashError,
       });
     }
-  });
-  let query = `INSERT INTO users (username, password) values ('${username}','${password}')`;
-  Connect().then((connection: any) => {
-    Query<IMySQLResult>(connection, query)
-      .then((result) => {
-        logging.info(NAMESPACE, "User with id ${result.insertId} inserted");
+    let query = `INSERT INTO users (email, password) values ('${email}','${hash}')`;
+    Connect()
+      .then((connection: any) => {
+        Query(connection, query)
+          .then((result: any) => {
+            logging.info(NAMESPACE, `User with id ${result.insertId} inserted`);
 
-        return res.status(201).json(result);
-      })
-      .catch((error) => {
-        logging.error(NAMESPACE, error.message);
-        return res.status(500).json({
-          message: error.message,
-          error,
-        });
+            return res.status(201).json(result);
+          })
+          .catch((error) => {
+            logging.error(NAMESPACE, error.message);
+            return res.status(500).json({
+              message: error.message,
+              error,
+            });
+          });
       })
       .catch((error) => {
         logging.error(NAMESPACE, error.message);
@@ -60,7 +61,7 @@ const login = (req: Request, res: Response, next: NextFunction) => {
   const query = `SELECT * FROM users WHERE username = '${username}'`;
   Connect()
     .then((connection: any) => {
-      Query<IUser[]>(connection, query)
+      Query(connection, query)
         .then((users: any) => {
           bcryptjs.compare(password, users[0].password, (error, result) => {
             if (error) {
@@ -108,7 +109,7 @@ const getAllUsers = (req: Request, res: Response, next: NextFunction) => {
   const query = `SELECT * FROM users`;
   Connect()
     .then((connection: any) => {
-      Query<IUser[]>(connection, query)
+      Query(connection, query)
         .then((users: any) => {
           res.status(200).json({
             message: "Get all user successful",
